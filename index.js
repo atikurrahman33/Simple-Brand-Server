@@ -49,6 +49,39 @@ async function run() {
         }
     });
 
+    app.get('/newuser', async (req, res) => {
+        console.log(req.query);
+        let query = {};
+        if (req.query?.email) {
+          query = { email: req.query.email }
+        }
+        const cursor = userCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+      });
+
+      app.get('/newuser/ascending', async (req, res) => {
+        console.log(req.query);
+        let query = {};
+        if (req.query?.email) {
+          query = { email: req.query.email }
+        }
+        const cursor = userCollection.find(query).sort({price: 1});
+        const result = await cursor.toArray();
+        res.send(result);
+      })
+  
+      app.get('/newuser/descending', async (req, res) => {
+        console.log(req.query);
+        let query = {};
+        if (req.query?.email) {
+          query = { email: req.query.email }
+        }
+        const cursor = userCollection.find(query).sort({price: -1});
+        const result = await cursor.toArray();
+        res.send(result);
+      })
+
     app.post('/users',async(req,res)=>{
       const user=req.body;
       console.log('new use',user);
