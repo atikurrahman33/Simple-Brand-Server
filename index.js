@@ -34,6 +34,21 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/brand/:category', async (req, res) => {
+        try {
+            const category = (req.params.category);
+            if (category === 'Toyota' || category === 'presentation' || category === 'suggestion' || category === 'lecture' || category === 'labreport') {
+                const result = await userCollection.find({ category }).sort({ _id: -1 }).toArray();
+                res.status(200).json(result);
+            } else {
+                res.status(404).send("Invalid category");
+            }
+        } catch (error) {
+            console.error("Error fetching lectures by category:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    });
+
     app.post('/users',async(req,res)=>{
       const user=req.body;
       console.log('new use',user);
