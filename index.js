@@ -34,10 +34,18 @@ async function run() {
       res.send(result)
     })
 
+    app.get('/newuser/:id', async (req, res) => {
+        const id = req.params.id;
+        console.log(id);
+        const query = { _id: new ObjectId(id) };
+        const result = await userCollection.findOne(query);
+        res.send(result);
+      })
+
     app.get('/brand/:category', async (req, res) => {
         try {
             const category = (req.params.category);
-            if (category === 'Toyota' || category === 'presentation' || category === 'suggestion' || category === 'lecture' || category === 'labreport') {
+            if (category === 'Toyota' || category === 'Ford' || category === 'Honda' || category === 'Bmw' || category === 'Chevrolet'|| category === 'Nissan' )  {
                 const result = await userCollection.find({ category }).sort({ _id: -1 }).toArray();
                 res.status(200).json(result);
             } else {
@@ -87,7 +95,28 @@ async function run() {
       console.log('new use',user);
       const result = await userCollection.insertOne(user);
       res.send(result)
-    })
+    });
+
+    app.patch('/newUser/:id', async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updatedToy = req.body;
+        console.log(updatedToy);
+        const cars = {
+          $set: {
+            name: updatedToy.name,
+            picture: updatedToy.picture,
+            price: updatedToy.price,
+            availableQuantity: updatedToy.availableQuantity,
+            description: updatedToy.description,
+  
+          }
+        }
+  
+        const result = await userCollection.updateOne(filter, cars, options);
+        res.send(result)
+      })
 
     app.delete('/users/:id', async(req, res) => {
       const id= req.params.id
@@ -109,9 +138,7 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
