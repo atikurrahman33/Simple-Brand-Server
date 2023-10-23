@@ -57,76 +57,7 @@ async function run() {
         }
     });
 
-    app.get('/newuser', async (req, res) => {
-        console.log(req.query);
-        let query = {};
-        if (req.query?.email) {
-          query = { email: req.query.email }
-        }
-        const cursor = userCollection.find(query);
-        const result = await cursor.toArray();
-        res.send(result);
-      });
-
-      app.get('/newuser/ascending', async (req, res) => {
-        console.log(req.query);
-        let query = {};
-        if (req.query?.email) {
-          query = { email: req.query.email }
-        }
-        const cursor = userCollection.find(query).sort({price: 1});
-        const result = await cursor.toArray();
-        res.send(result);
-      })
-  
-      app.get('/newuser/descending', async (req, res) => {
-        console.log(req.query);
-        let query = {};
-        if (req.query?.email) {
-          query = { email: req.query.email }
-        }
-        const cursor = userCollection.find(query).sort({price: -1});
-        const result = await cursor.toArray();
-        res.send(result);
-      })
-
-    app.post('/users',async(req,res)=>{
-      const user=req.body;
-      console.log('new use',user);
-      const result = await userCollection.insertOne(user);
-      res.send(result)
-    });
-
-    app.patch('/newUser/:id', async (req, res) => {
-        const id = req.params.id;
-        const filter = { _id: new ObjectId(id) };
-        const options = { upsert: true };
-        const updatedToy = req.body;
-        console.log(updatedToy);
-        const cars = {
-          $set: {
-            name: updatedToy.name,
-            picture: updatedToy.picture,
-            price: updatedToy.price,
-            availableQuantity: updatedToy.availableQuantity,
-            description: updatedToy.description,
-  
-          }
-        }
-  
-        const result = await userCollection.updateOne(filter, cars, options);
-        res.send(result)
-      })
-
-    app.delete('/users/:id', async(req, res) => {
-      const id= req.params.id
-      console.log('delete id',id)
-      const query = {_id:new ObjectId(id)  };
-      const result = await userCollection.deleteOne(query);
-      res.send(result);
-
     
-    })
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
